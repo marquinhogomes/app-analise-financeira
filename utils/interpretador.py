@@ -1,8 +1,9 @@
-def gerar_diagnostico(indicadores):
+def gerar_diagnostico(indicadores, dre):
     texto = ""
     alertas = []
     dados = indicadores.iloc[-1]
     ano = dados['Ano']
+    lucro_liquido = dre['Lucro Líquido'].iloc[-1]
 
     if dados['FCO'] < 0:
         alertas.append(f"🔴 Fluxo de Caixa Operacional negativo em {ano}")
@@ -12,7 +13,7 @@ def gerar_diagnostico(indicadores):
         alertas.append(f"🔴 Cobertura de Juros inferior a 1,5x em {ano} (risco de inadimplência)")
     if dados['Liquidez Corrente'] < 1:
         alertas.append(f"🔴 Liquidez Corrente inferior a 1,0 em {ano}")
-    if dados['FCO'] < 0 and dados['Lucro Líquido'] > 0:
+    if dados['FCO'] < 0 and lucro_liquido > 0:
         alertas.append("🟡 Lucro contábil positivo, mas FCO negativo (lucro não recorrente?)")
 
     if dados['FCO'] > 0:
