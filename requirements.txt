@@ -4,5 +4,4 @@ plotly
 matplotlib
 openpyxl
 PyMuPDF
-pdfkit
 weasyprint
