@@ -7,7 +7,7 @@ from utils.parser_pdf import pdf_para_dataframes
 from utils.valuation import calcular_fcd
 from utils.comparador_empresas import comparar_empresas
 from utils.simulador_impacto import simular_impacto
-from utils.exportador_pdf import gerar_html_relatorio, salvar_pdf
+from utils.exportador_pdf import gerar_html_relatorio
 
 st.set_page_config(page_title="Análise Financeira Automatizada", layout="wide")
 
