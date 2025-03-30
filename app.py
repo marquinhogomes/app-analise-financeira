@@ -134,8 +134,8 @@ with st.expander("Simule mudanças operacionais e veja os impactos", expanded=Fa
         st.metric("NCG Projetada", f"R$ {simulacao['NCG Projetada']:,.0f}")
         st.metric("FCO Estimado", f"R$ {simulacao['FCO Estimado']:,.0f}")
 
-# Exportar PDF
+# Exportar HTML
 st.markdown("## Exportar Relatório")
 if st.button("Exportar Relatório em HTML"):
     html = gerar_html_relatorio(nome_empresa, df_dre, df_bp, df_dfc, indicadores, diag, valuation, simulacao)
-    st.download_button("📄 Baixar HTML", html, file_name="relatorio_analise.html")
+    st.download_button("📄 Baixar HTML", data=html, file_name="relatorio_analise.html", mime="text/html")
