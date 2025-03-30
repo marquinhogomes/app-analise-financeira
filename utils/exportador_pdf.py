@@ -1,6 +1,4 @@
 import datetime
-import tempfile
-import os
 
 def gerar_html_relatorio(nome_empresa, df_dre, df_bp, df_dfc, indicadores, diagnostico, valuation=None, simulacao=None):
     hoje = datetime.date.today().strftime("%d/%m/%Y")
@@ -11,7 +9,8 @@ def gerar_html_relatorio(nome_empresa, df_dre, df_bp, df_dfc, indicadores, diagn
         <style>
             body {{ font-family: Arial, sans-serif; }}
             h1, h2 {{ color: #1f4e79; }}
-            table {{ width: 100%; border-collapse: collapse; margin-bottom: 20px...
+            table {{ width: 100%; border-collapse: collapse; margin-bottom: 20px; }}
+            th, td {{ b...
     }
   ]
 }
