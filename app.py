@@ -138,6 +138,4 @@ with st.expander("Simule mudanças operacionais e veja os impactos", expanded=Fa
 st.markdown("## Exportar Relatório")
 if st.button("Exportar Relatório em PDF"):
     html = gerar_html_relatorio(nome_empresa, df_dre, df_bp, df_dfc, indicadores, diag, valuation, simulacao)
-    caminho_pdf = salvar_pdf(html)
-    with open(caminho_pdf, "rb") as f:
-        st.download_button("📄 Baixar PDF", f, file_name="relatorio_financeiro.pdf")
+    st.download_button("📄 Baixar HTML", html, file_name="relatorio_analise.html")
