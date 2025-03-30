@@ -64,7 +64,7 @@ st.plotly_chart(fig_lucro, use_container_width=True)
 
 # Diagnóstico
 st.markdown("## Diagnóstico Automático")
-diag = gerar_diagnostico(indicadores)
+diag = gerar_diagnostico(indicadores, df_dre)
 st.write(diag['texto'])
 st.info(diag['alertas'])
 
