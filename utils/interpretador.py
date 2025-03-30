@@ -16,19 +16,16 @@ def gerar_diagnostico(indicadores):
         alertas.append("🟡 Lucro contábil positivo, mas FCO negativo (lucro não recorrente?)")
 
     if dados['FCO'] > 0:
-        texto += f"✅ A empresa gerou caixa operacional em {ano}.
-"
+        texto += f"✅ A empresa gerou caixa operacional em {ano}.\n"
     if dados['Margem EBITDA (%)'] > 20:
-        texto += "✅ Boa margem operacional (EBITDA > 20%)
-"
+        texto += "✅ Boa margem operacional (EBITDA > 20%)\n"
     if dados['ROE (%)'] > 15:
-        texto += "✅ ROE acima de 15% - bom retorno sobre o capital próprio.
-"
+        texto += "✅ ROE acima de 15% - bom retorno sobre o capital próprio.\n"
     if dados['Dívida/PL'] < 1:
-        texto += "✅ Baixa alavancagem (Dívida/PL < 1,0)
-"
+        texto += "✅ Baixa alavancagem (Dívida/PL < 1,0)\n"
 
     if not alertas:
         alertas.append("🟢 Nenhum alerta crítico identificado no último ano.")
 
     return {"texto": texto.strip(), "alertas": "\n".join(alertas)}
+
