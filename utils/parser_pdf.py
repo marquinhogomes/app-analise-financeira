@@ -1,9 +1,10 @@
 import fitz
 import pandas as pd
 import re
+import io
 
-def extrair_tabelas_pdf(path_pdf: str) -> dict:
-    doc = fitz.open(path_pdf)
+def extrair_tabelas_pdf(pdf_file) -> dict:
+    doc = fitz.open(stream=pdf_file.read(), filetype="pdf")
     texto_total = "".join(p.get_text() for p in doc)
     linhas = texto_total.split('\n')
     dre, bp, dfc = [], [], []
