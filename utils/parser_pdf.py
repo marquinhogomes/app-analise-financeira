@@ -1,21 +1,21 @@
-import fitz
+import fitz  # PyMuPDF
 import pandas as pd
 import re
 import io
 
 def extrair_tabelas_pdf(pdf_file) -> dict:
     doc = fitz.open(stream=pdf_file.read(), filetype="pdf")
-    texto_total = "".join(p.get_text() for p in doc)
+    texto_total = "\n".join(p.get_text() for p in doc)
     linhas = texto_total.split('\n')
     dre, bp, dfc = [], [], []
 
     for linha in linhas:
         l = linha.lower()
-        if 'receita líquida' in l or 'lucro bruto' in l or 'ebitda' in l:
+        if any(x in l for x in ['receita líquida', 'lucro bruto', 'ebitda', 'resultado financeiro', 'lucro líquido']):
             dre.append(linha)
-        elif 'ativo circulante' in l or 'passivo circulante' in l or 'estoques' in l:
+        elif any(x in l for x in ['ativo circulante', 'passivo circulante', 'estoques', 'patrimônio líquido', 'fornecedores', 'contas a receber']):
             bp.append(linha)
-        elif 'fluxo de caixa operacional' in l or 'fco' in l:
+        elif any(x in l for x in ['fluxo de caixa operacional', 'fco', 'atividades de financiamento']):
             dfc.append(linha)
 
     return {'dre_raw': dre, 'bp_raw': bp, 'dfc_raw': dfc, 'texto_total': texto_total}
@@ -32,8 +32,8 @@ def processar_valores_extracao(lista_raw):
                 dados[chave] = valor_limpo
     return dados
 
-def pdf_para_dataframes(path_pdf: str):
-    raw = extrair_tabelas_pdf(path_pdf)
+def pdf_para_dataframes(pdf_file):
+    raw = extrair_tabelas_pdf(pdf_file)
     ano = 2023
     dre_dict = processar_valores_extracao(raw['dre_raw'])
     bp_dict = processar_valores_extracao(raw['bp_raw'])
