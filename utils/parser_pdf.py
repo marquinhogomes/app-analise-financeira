@@ -42,4 +42,21 @@ def pdf_para_dataframes(pdf_file):
     dre_df = pd.DataFrame([{**dre_dict, 'Ano': ano}])
     bp_df = pd.DataFrame([{**bp_dict, 'Ano': ano}])
     dfc_df = pd.DataFrame([{**dfc_dict, 'Ano': ano, 'FCO': dfc_dict.get('FCO', 0)}])
+
+    # Mapas de renomeação
+    renomear_bp = {
+        'Ativo Circulante': ['Ativo Circulante', 'Total Ativo Circulante'],
+        'Passivo Circulante': ['Passivo Circulante', 'Total Passivo Circulante'],
+        'Patrimônio Líquido': ['Patrimônio Líquido', 'PL', 'Patrimonio Liquido'],
+        'Fornecedores': ['Fornecedores'],
+        'Contas a Receber': ['Contas a Receber'],
+        'Estoques': ['Estoques']
+    }
+
+    # Renomear colunas do bp_df conforme mapeamento
+    for col_final, alternativas in renomear_bp.items():
+        for alt in alternativas:
+            if alt in bp_df.columns:
+                bp_df.rename(columns={alt: col_final}, inplace=True)
+                
     return dre_df, bp_df, dfc_df
