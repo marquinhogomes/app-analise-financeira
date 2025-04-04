@@ -32,6 +32,15 @@ def processar_valores_extracao(lista_raw):
                 dados[chave] = valor_limpo
     return dados
 
+def aplicar_mapeamento_colunas(df, mapeamento):
+    colunas_lower = {col.lower(): col for col in df.columns}
+    for col_final, alternativas in mapeamento.items():
+        for alt in alternativas:
+            alt_lower = alt.lower()
+            if alt_lower in colunas_lower:
+                df.rename(columns={colunas_lower[alt_lower]: col_final}, inplace=True)
+                break
+
 def pdf_para_dataframes(pdf_file):
     raw = extrair_tabelas_pdf(pdf_file)
     ano = 2023
@@ -43,20 +52,95 @@ def pdf_para_dataframes(pdf_file):
     bp_df = pd.DataFrame([{**bp_dict, 'Ano': ano}])
     dfc_df = pd.DataFrame([{**dfc_dict, 'Ano': ano, 'FCO': dfc_dict.get('FCO', 0)}])
 
-    # Mapeamento de colunas esperadas
-    renomear_bp = {
+    # Mapeamento de colunas
+    mapeamento_bp = {
         'Ativo Circulante': ['Ativo Circulante', 'Total Ativo Circulante'],
-        'Passivo Circulante': ['Passivo Circulante', 'Total Passivo Circulante'],
-        'Patrimônio Líquido': ['Patrimônio Líquido', 'PL', 'Patrimonio Liquido'],
+        'Disponível': ['Disponivel', 'Caixa', 'Bancos Conta Movimento', 'Numerarios'],
+        'Aplicações Financeiras': ['Aplicacoes Financeiras', 'Aplicacoes Financeiras Liquidez Imediata'],
+        'Clientes': ['Clientes', 'Duplicatas A Receber'],
+        'Outros Créditos': ['Outros Creditos'],
+        'Adiantamentos a Fornecedores': ['Adiantamentos A Fornecedores'],
+        'Tributos a Recuperar': ['Tributos A Recuperar / Compensar'],
+        'Estoques': ['Estoques', 'Mercadorias Para Revenda'],
+        'Ativo Não Circulante': ['Ativo Nao Circulante'],
+        'Realizável a Longo Prazo': ['Ativo Realizavel A Longo Prazo'],
+        'Depósitos Judiciais': ['Depositos Judiciais'],
+        'Imobilizado': ['Imobilizado'],
+        'Bens Imóveis': ['Bens Imoveis'],
+        'Bens Móveis': ['Bens Moveis'],
+        'Imobilizado em Andamento': ['Imobilizado Em Andamento', 'Bens Adq. Consorcio- A Contemplar'],
+        'Depreciações Acumuladas': ['Depreciacoes Acumuladas Bens Imoveis', 'Depr.Acum.de Moveis E Utensilios', 'Depr.Acum.equip.Tecnologia Inform.', 'Depr. Acumuladas De Veiculos', 'Depr. Acumuladas Maq E Equiptos', 'Depr. Acumuladas Instalacoes'],
+        'Operações com Materiais Próprios': ['Operacoes Com Materiais Proprios'],
+        'Operações com Materiais de Terceiros': ['Operacoes Com Materiais De Terceiros'],
+        'Passivo Circulante': ['Passivo Circulante', 'Exigivel A Curto Prazo'],
+        'Empréstimos e Financiamentos CP': ['Emprestimos E Financiamentos'],
+        'Fornecedores': ['Fornecedores', 'Fornecedores Nacionais'],
+        'Obrigações Tributárias': ['Obrigacoes Tributarias', 'Impostos E Contribuicoes A Recolher'],
+        'Obrigações Trabalhistas e Previdenciárias': ['Obrigacoes Trabalhistas E Previdenciaria'],
+        'Provisões': ['Provisoes'],
+        'Outras Obrigações': ['Outras Obrigacoes', 'Contas A Pagar'],
+        'Passivo Não Circulante': ['Passivo Nao Circulante', 'Passivo Exigivel A Longo Prazo'],
+        'Empréstimos e Financiamentos LP': ['Emprestimos De Socios', 'Outros Debitos Socios, Administradores'],
+        'Outras Obrigações LP': ['Outras Contas A Pagar'],
+        'Patrimônio Líquido': ['Patrimonio Liquido'],
+        'Capital Social': ['Capital Social', 'Capital Subscrito'],
+        'Reservas de Lucros': ['Reservas De Lucros'],
+        'Prejuízos Acumulados': ['Prejuizos Acumulados']
+    }
+    mapeamento_dre = {
+        'Receita Bruta': ['Receitas', 'Receita Da Prestacao De Servicos', 'Venda De Mercadorias No Mercado Externo'],
+        'Cancelamentos e Devoluções': ['Cancelamento E Devolucoes', 'Dev. Venda Mercadorias Mercado Ext'],
+        'Descontos Incondicionais': ['Descontos Incondicionais'],
+        'Impostos sobre Vendas': ['Impostos Incidentes S/ Vendas', 'ICMS'],
+        'Juros e Descontos Obtidos': ['Juros E Descontos', 'Juros De Aplicacoes Financeiras', 'Juros Ativos', 'Descontos Financeiros Obtidos'],
+        'Variações Cambiais Ativas': ['Variacoes Monetarias', 'Variacoes Cambiais Ativas'],
+        'Receitas Não Operacionais': ['Resultados Nao Operacionais', 'Outras Receitas Nao Operacionais'],
+        'Resultado Alienação Imobilizado': ['Resultado Positivo Na Alienacao Do Imobi'],
+        'Material Aplicado': ['Material Aplicado', 'Consumo De Embalagens'],
+        'CPV': ['Custo Dos Produtos Vendidos'],
+        'Despesas com Pessoal': ['Despesas Com Pessoal', 'Salarios E Ordenados', 'Pro-Labore', '13o Salario', 'Ferias', 'INSS', 'FGTS', 'Indenizacoes E Aviso Previo', 'Assistencia Medica', 'Horas Extras', 'Adicional Noturno', 'EPI - Equipto De Protecao Individual', 'Vale Alimentacao', 'Vale Transporte', 'Cesta Basica', 'Ajuda De Custo'],
+        'Comissões sobre Vendas': ['Comissoes Sobre Vendas', 'Comissoes'],
+        'Propaganda e Publicidade': ['Propaganda E Publicidade', 'Amostras Gratis'],
+        'Despesas com Entrega': ['Despesas Com Entrega', 'Fretes Nacionais', 'Fretes Internacionais', 'Manutencao De Veiculos', 'Despesas Aduaneiras', 'Despesas Portuarias'],
+        'Despesas com Viagens': ['Despesas C/ Viagens E Representacoes', 'Viagens E Representacoes', 'Refeicoes'],
+        'Despesas Gerais': ['Despesas Gerais', 'Alugueis E Condominios', 'Manutencao E Reparos', 'Telefone', 'Despesas Postais E Telegraficas', 'Agua E Esgoto', 'Servicos Prestados Por Terceiros', 'Seguros', 'Locacao De Veiculos E Equipamentos', 'Energia Eletrica', 'IPVA E Licenciamento De Veiculos', 'Material De Escritorio', 'Material De Limpeza', 'Copa, Cozinha E Refeitorio', 'Combustiveis E Lubrificantes', 'Despesas Com Informatica', 'Bens De Pequeno Valor', 'Despesas Diversas', 'Manutencao De Maquinas E Equipamentos', 'Estacionamento', 'Multas De Transito', 'Assessoria Contabil'],
+        'Depreciação e Amortização': ['Depreciacao E Amortizacao'],
+        'Despesas Judiciais e Legais': ['Despesas Legais E Judiciais'],
+        'Taxas Diversas': ['Taxas Diversas'],
+        'Créditos de PIS/Cofins': ['Creditos De PIS', 'Creditos De Cofins'],
+        'Despesas Financeiras': ['Despesas Financeiras', 'Variacoes Cambiais Passivas', 'Atualizacao De Impostos Atrasados', 'Juros E Comissoes Bancarias', 'IOF'],
+        'Resultado Alienação Imobilizado Negativo': ['Resultado Negativo Na Alienacao Do Imobi'],
+        'Lucro Líquido': ['Lucro']
+    }
+    mapeamento_dfc = {
+        'FCO': ['Fluxo De Caixa Operacional', 'FCO', 'Fluxo Operacional'],
+        'FCI': ['Fluxo De Caixa De Investimento', 'FCI', 'Atividades De Investimento'],
+        'FCF': ['Fluxo De Caixa De Financiamento', 'FCF', 'Atividades De Financiamento'],
+        'Lucro Líquido': ['Lucro Líquido Do Exercício'],
+        'Depreciações': ['Depreciações'],
+        'Resultado Venda Imobilizado': ['Resultado Na Venda De Imobilizado'],
+        'Ajustes de Exercícios Anteriores': ['Ajuste De Exercicio Anterior'],
+        'Contas a Receber': ['Contas A Receber De Clientes'],
+        'Impostos a Recuperar': ['Impostos A Recuperar'],
+        'Adiantamento a Fornecedores': ['Adiantamento De Fornecedores'],
+        'Estoques': ['Estoque'],
+        'Outros Créditos': ['Outros Créditos'],
+        'Despesas Antecipadas': ['Despesas Antecipadas'],
         'Fornecedores': ['Fornecedores'],
-        'Contas a Receber': ['Contas a Receber'],
-        'Estoques': ['Estoques']
+        'Obrigações Trabalhistas': ['Obrigações Trabalhistas E Sociais'],
+        'Impostos a Recolher': ['Impostos E Contribuições A Recolher'],
+        'Outras Contas a Pagar': ['Outras Contas A Pagar'],
+        'Aquisicao Imobilizado': ['Aquisição De Bens Do Ativo Imobilizado'],
+        'Venda Imobilizado': ['Venda De Ativo Imobilizado'],
+        'Emprestimos e Financiamentos': ['Empréstimos E Financiamentos'],
+        'Empresas Ligadas': ['Empresas Ligadas - Ativo'],
+        'Variação De Caixa': ['Aumento / (Redução) Líquido De Caixa E Equivalente De Caixa'],
+        'Caixa Inicial': ['Caixa E Equivalente De Caixa No Início Do Período'],
+        'Caixa Final': ['Caixa E Equivalente De Caixa No Final Do Período']
     }
 
-    for col_final, alternativas in renomear_bp.items():
-        for alt in alternativas:
-            if alt in bp_df.columns:
-                bp_df.rename(columns={alt: col_final}, inplace=True)
-                break
+    aplicar_mapeamento_colunas(bp_df, mapeamento_bp)
+    aplicar_mapeamento_colunas(dre_df, mapeamento_dre)
+    aplicar_mapeamento_colunas(dfc_df, mapeamento_dfc)
 
     return dre_df, bp_df, dfc_df
