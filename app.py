@@ -41,13 +41,17 @@ elif modo_entrada == "Manual":
     st.stop()
 
 # Exibir dados
-with st.expander("Demonstrações Financeiras - Visualização", expanded=False):
-    st.subheader("DRE")
-    st.dataframe(df_dre)
-    st.subheader("Balanço Patrimonial")
-    st.dataframe(df_bp)
-    st.subheader("DFC")
-    st.dataframe(df_dfc)
+if 'df_dre' in locals() and 'df_bp' in locals() and 'df_dfc' in locals():
+    with st.expander("Demonstrações Financeiras - Visualização", expanded=False):
+        st.subheader("DRE")
+        st.dataframe(df_dre)
+        st.subheader("Balanço Patrimonial")
+        st.dataframe(df_bp)
+        st.subheader("DFC")
+        st.dataframe(df_dfc)
+else:
+    st.warning("Por favor, carregue um arquivo Excel ou PDF válido.")
+    st.stop()
 
 # Cálculo de Indicadores
 st.markdown("## Indicadores Financeiros")
