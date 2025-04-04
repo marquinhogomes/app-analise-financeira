@@ -43,7 +43,7 @@ def pdf_para_dataframes(pdf_file):
     bp_df = pd.DataFrame([{**bp_dict, 'Ano': ano}])
     dfc_df = pd.DataFrame([{**dfc_dict, 'Ano': ano, 'FCO': dfc_dict.get('FCO', 0)}])
 
-    # Mapas de renomeação
+    # Mapeamento de colunas esperadas
     renomear_bp = {
         'Ativo Circulante': ['Ativo Circulante', 'Total Ativo Circulante'],
         'Passivo Circulante': ['Passivo Circulante', 'Total Passivo Circulante'],
@@ -53,10 +53,10 @@ def pdf_para_dataframes(pdf_file):
         'Estoques': ['Estoques']
     }
 
-    # Renomear colunas do bp_df conforme mapeamento
     for col_final, alternativas in renomear_bp.items():
         for alt in alternativas:
             if alt in bp_df.columns:
                 bp_df.rename(columns={alt: col_final}, inplace=True)
-                
+                break
+
     return dre_df, bp_df, dfc_df
