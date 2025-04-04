@@ -139,8 +139,25 @@ def pdf_para_dataframes(pdf_file):
         'Caixa Final': ['Caixa E Equivalente De Caixa No Final Do Período']
     }
 
-    aplicar_mapeamento_colunas(bp_df, mapeamento_bp)
+   aplicar_mapeamento_colunas(bp_df, mapeamento_bp)
     aplicar_mapeamento_colunas(dre_df, mapeamento_dre)
     aplicar_mapeamento_colunas(dfc_df, mapeamento_dfc)
+
+    # Preenchimento padrão para evitar KeyError na análise posterior
+    colunas_obrigatorias_bp = ['Ativo Circulante', 'Passivo Circulante']
+    colunas_obrigatorias_dre = ['Receita Líquida', 'Lucro Líquido', 'EBITDA']
+    colunas_obrigatorias_dfc = ['FCO']
+
+    for col in colunas_obrigatorias_bp:
+        if col not in bp_df.columns:
+            bp_df[col] = [0.0]
+
+    for col in colunas_obrigatorias_dre:
+        if col not in dre_df.columns:
+            dre_df[col] = [0.0]
+
+    for col in colunas_obrigatorias_dfc:
+        if col not in dfc_df.columns:
+            dfc_df[col] = [0.0]
 
     return dre_df, bp_df, dfc_df
