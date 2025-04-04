@@ -139,7 +139,7 @@ def pdf_para_dataframes(pdf_file):
         'Caixa Final': ['Caixa E Equivalente De Caixa No Final Do Período']
     }
 
-   aplicar_mapeamento_colunas(bp_df, mapeamento_bp)
+    aplicar_mapeamento_colunas(bp_df, mapeamento_bp)
     aplicar_mapeamento_colunas(dre_df, mapeamento_dre)
     aplicar_mapeamento_colunas(dfc_df, mapeamento_dfc)
 
