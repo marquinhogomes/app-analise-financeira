@@ -144,9 +144,31 @@ def pdf_para_dataframes(pdf_file):
     aplicar_mapeamento_colunas(dfc_df, mapeamento_dfc)
 
     # Preenchimento padrão para evitar KeyError na análise posterior
-    colunas_obrigatorias_bp = ['Ativo Circulante', 'Passivo Circulante']
-    colunas_obrigatorias_dre = ['Receita Líquida', 'Lucro Líquido', 'EBITDA']
-    colunas_obrigatorias_dfc = ['FCO']
+    colunas_obrigatorias_bp = [
+        'Ativo Circulante', 'Passivo Circulante', 'Estoques', 'Caixa e equivalentes de caixa',
+        'Contas a receber de clientes', 'Impostos a recuperar', 'Adiantamento a fornecedores e outros',
+        'Outros créditos', 'Devedores cotistas', 'Ativo não circulante', 'Outros valores a receber',
+        'Imobilizado', 'Intangível', 'Fornecedores e outras obrigações', 'Empréstimos e financiamentos',
+        'Duplicatas Descontadas', 'Obrigações trabalhistas com provisoes', 'Impostos a recolher',
+        'Adiantamento de clientes', 'Parcelamento de impostos', 'Empréstimos e financiamentos giro e Maq.',
+        'Fornecedores Não Circulante', 'Capital social', 'Reserva de lucros', 'Patrimônio líquido'
+    ]
+    colunas_obrigatorias_dre = [
+        'Receita Bruta', 'Receita Líquida', 'Custo dos produtos vendidos', 'Lucro Bruto',
+        'Vendas', 'Gerais e administrativas', 'Receitas \(despesas\) operacionais líquidas',
+        'Lucro Operacional', 'Receitas financeiras', 'Despesas financeiras',
+        'Resultado antes dos tributos sobre os lucros', 'Receitas / Despesas Não operacionais',
+        'Imposto de renda e contribuição social', 'Lucro \(prejuízo\) líquido do período'
+    ]
+    colunas_obrigatorias_dfc = [
+        'FCO', 'FCI', 'FCF', 'Lucro Líquido', 'Depreciações',
+        'Resultado Venda Imobilizado', 'Ajustes de Exercícios Anteriores', 'Contas a Receber',
+        'Impostos a Recuperar', 'Adiantamento a Fornecedores', 'Estoques', 'Outros Créditos',
+        'Despesas Antecipadas', 'Fornecedores', 'Obrigações Trabalhistas', 'Impostos a Recolher',
+        'Outras Contas a Pagar', 'Aquisicao Imobilizado', 'Venda Imobilizado',
+        'Emprestimos e Financiamentos', 'Empresas Ligadas', 'Variação De Caixa',
+        'Caixa Inicial', 'Caixa Final'
+    ]
 
     for col in colunas_obrigatorias_bp:
         if col not in bp_df.columns:
